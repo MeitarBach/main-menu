@@ -10,14 +10,20 @@ namespace Ex04.Menus.Interfaces
     {
         private readonly List<MenuItem> r_MenuItems;
         private string m_Title;
+        private readonly List<IChoosableObserver> r_ChosenOptionObservers = new List<IChoosableObserver>();
 
-        public MenuItem(MenuItem i_Parent)
+        public MenuItem(MenuItem i_Parent, string i_Title)
         {
             r_MenuItems = new List<MenuItem>();
+            m_Title = i_Title;
             r_MenuItems.Add(i_Parent);
-        }
 
-        private readonly List<IChoosableObserver> r_ChosenOptionObservers = new List<IChoosableObserver>();
+            if(i_Parent != null)
+            {
+                r_ChosenOptionObservers = i_Parent.ChosenOptionsObservers;
+                i_Parent.AddSubItem(this);
+            }
+        }
 
         public string Title
         {
@@ -29,6 +35,22 @@ namespace Ex04.Menus.Interfaces
             set
             {
                 m_Title = value;
+            }
+        }
+
+        public List<IChoosableObserver> ChosenOptionsObservers
+        {
+            get
+            {
+                return r_ChosenOptionObservers;
+            }
+        }
+
+        public MenuItem Parent
+        {
+            get
+            {
+                return r_MenuItems[0];
             }
         }
 
@@ -47,38 +69,40 @@ namespace Ex04.Menus.Interfaces
             r_MenuItems.Add(i_Item);
         }
 
-        public MenuItem GetItemFromList(int i_ItemIndex)
-        {
-            return r_MenuItems[i_ItemIndex];
-        }
-
         public void Show()
         {
+            Console.Clear();
             StringBuilder menuItemStringBuilder = new StringBuilder();
             menuItemStringBuilder.Append(string.Format("{0}{1}=============={1}", m_Title, Environment.NewLine));
-            foreach(MenuItem item in r_MenuItems)
+            for (int i = 1 ; i < r_MenuItems.Count ; i++)
             {
-                if(item != null)
-                {
-                    menuItemStringBuilder.Append(string.Format("{0}{1}", item.Title, Environment.NewLine));
-                }
+                menuItemStringBuilder.Append(string.Format("{0}. {1}{2}", i, r_MenuItems[i].Title, Environment.NewLine));
+            }
+
+            if(this is MainMenu)
+            {
+                menuItemStringBuilder.Append("0. Exit");
+            }
+            else
+            {
+                menuItemStringBuilder.Append("0. Back");
             }
 
             Console.WriteLine(menuItemStringBuilder.ToString());
             chooseOption();
         }
 
-        private int chooseOption()
+        private void chooseOption()
         {
-            int chosenOption;
-            int numOfOptions = r_MenuItems.Count;
-            string exitOrBack = this is MainMenu ? "Exit" : "Back";
+            int chosenItem;
+            int numOfOptions = r_MenuItems.Count - 1;
+            string exitOrBack = this is MainMenu ? "Exit" : "go Back";
 
             const bool v_InvalidInput = true;
             while(v_InvalidInput)
             {
                 Console.WriteLine("Please enter your choice (1-{0} or 0 to {1})", numOfOptions, exitOrBack);
-                if (int.TryParse(Console.ReadLine(), out chosenOption) && validateChoice(chosenOption))
+                if (int.TryParse(Console.ReadLine(), out chosenItem) && validateChoice(chosenItem))
                 {
                     break;
                 }
@@ -86,22 +110,20 @@ namespace Ex04.Menus.Interfaces
                 Console.WriteLine("Invalid input");
             }
 
-            notifyOptionCohsenObservers(chosenOption);
-
-            return chosenOption;
+            notifyOptionChosenObservers(chosenItem);
         }
 
-        private void notifyOptionCohsenObservers(int i_ChosenOption)
+        private void notifyOptionChosenObservers(int i_ChosenOption)
         {
             foreach(IChoosableObserver observer in r_ChosenOptionObservers)
             {
-                observer.UserChoseOption(this, i_ChosenOption);
+                observer.UserChoseOption(r_MenuItems[i_ChosenOption]);
             }
         }
 
         private bool validateChoice(int i_ChosenOption)
         {
-            return i_ChosenOption >= 0 && i_ChosenOption <= r_MenuItems.Count;
+            return i_ChosenOption >= 0 && i_ChosenOption <= r_MenuItems.Count - 1;
         }
     }
 }

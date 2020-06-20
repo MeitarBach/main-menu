@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Ex04.Menus.Interfaces
 {
-    class ActionItem : MenuItem
+    public class ActionItem : MenuItem
     {
-        public ActionItem() : base(null)
+        public ActionItem(MenuItem i_Parent, string i_Title) : base(i_Parent, i_Title)
         {
-            
         }
+
     }
 }
