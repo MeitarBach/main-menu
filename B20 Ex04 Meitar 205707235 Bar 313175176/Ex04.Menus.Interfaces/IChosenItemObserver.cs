@@ -1,6 +1,6 @@
 ﻿namespace Ex04.Menus.Interfaces
 {
-    public interface IChoosableObserver
+    public interface IChosenItemObserver
     {
         void UserChoseOption(MenuItem i_ChosenItem);
 

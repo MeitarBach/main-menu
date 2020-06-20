@@ -10,7 +10,7 @@ namespace Ex04.Menus.Interfaces
     {
         private readonly List<MenuItem> r_MenuItems;
         private string m_Title;
-        private readonly List<IChoosableObserver> r_ChosenOptionObservers = new List<IChoosableObserver>();
+        private readonly List<IChosenItemObserver> r_ChosenItemObservers = new List<IChosenItemObserver>();
 
         public MenuItem(MenuItem i_Parent, string i_Title)
         {
@@ -20,7 +20,7 @@ namespace Ex04.Menus.Interfaces
 
             if(i_Parent != null)
             {
-                r_ChosenOptionObservers = i_Parent.ChosenOptionsObservers;
+                r_ChosenItemObservers = i_Parent.ChosenItemsObservers;
                 i_Parent.AddSubItem(this);
             }
         }
@@ -38,11 +38,11 @@ namespace Ex04.Menus.Interfaces
             }
         }
 
-        public List<IChoosableObserver> ChosenOptionsObservers
+        public List<IChosenItemObserver> ChosenItemsObservers
         {
             get
             {
-                return r_ChosenOptionObservers;
+                return r_ChosenItemObservers;
             }
         }
 
@@ -54,14 +54,14 @@ namespace Ex04.Menus.Interfaces
             }
         }
 
-        public void AttachObserver(IChoosableObserver i_OptionChosenObserver)
+        public void AttachObserver(IChosenItemObserver i_OptionChosenObserver)
         {
-            r_ChosenOptionObservers.Add(i_OptionChosenObserver);
+            r_ChosenItemObservers.Add(i_OptionChosenObserver);
         }
 
-        public void DetachObserver(IChoosableObserver i_SicknessObserver)
+        public void DetachObserver(IChosenItemObserver i_SicknessObserver)
         {
-            r_ChosenOptionObservers.Remove(i_SicknessObserver);
+            r_ChosenItemObservers.Remove(i_SicknessObserver);
         }
 
         public void AddSubItem(MenuItem i_Item)
@@ -94,7 +94,7 @@ namespace Ex04.Menus.Interfaces
 
         private void chooseOption()
         {
-            int chosenItem;
+            int chosenOption;
             int numOfOptions = r_MenuItems.Count - 1;
             string exitOrBack = this is MainMenu ? "Exit" : "go Back";
 
@@ -102,7 +102,7 @@ namespace Ex04.Menus.Interfaces
             while(v_InvalidInput)
             {
                 Console.WriteLine("Please enter your choice (1-{0} or 0 to {1})", numOfOptions, exitOrBack);
-                if (int.TryParse(Console.ReadLine(), out chosenItem) && validateChoice(chosenItem))
+                if (int.TryParse(Console.ReadLine(), out chosenOption) && validateChoice(chosenOption))
                 {
                     break;
                 }
@@ -110,14 +110,15 @@ namespace Ex04.Menus.Interfaces
                 Console.WriteLine("Invalid input");
             }
 
+            MenuItem chosenItem = r_MenuItems[chosenOption];
             notifyOptionChosenObservers(chosenItem);
         }
 
-        private void notifyOptionChosenObservers(int i_ChosenOption)
+        private void notifyOptionChosenObservers(MenuItem i_ChosenItem)
         {
-            foreach(IChoosableObserver observer in r_ChosenOptionObservers)
+            foreach(IChosenItemObserver observer in r_ChosenItemObservers)
             {
-                observer.UserChoseOption(r_MenuItems[i_ChosenOption]);
+                observer.UserChoseOption(i_ChosenItem);
             }
         }
 

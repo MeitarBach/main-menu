@@ -7,7 +7,7 @@ using Ex04.Menus.Interfaces;
 
 namespace Ex04.Test
 {
-    public class TestMenusInterfaces : IChoosableObserver
+    public class TestMenusInterfaces : IChosenItemObserver
     {
         private readonly MainMenu r_MainMenu;
 
