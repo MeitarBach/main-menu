@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ex04.Menus.Interfaces;
+using Ex04.Menus.Delegates;
 
 namespace Ex04.Test
 {
-    public class TestMenusInterfaces : IChosenActionObserver
+    public class TestMenusDelegates
     {
         private readonly MainMenu r_MainMenu;
 
-        public TestMenusInterfaces()
+        public TestMenusDelegates()
         {
             r_MainMenu = buildMenu();
         }
@@ -38,44 +38,15 @@ namespace Ex04.Test
             ActionItem showVersion = new ActionItem(versionsAndCapitals, "Show Version");
             ActionItem showTime = new ActionItem(showDateOrTime, "Show Time");
             ActionItem showDate = new ActionItem(showDateOrTime, "Show Date");
-            countCapitals.AttachObserver(this);
-            showVersion.AttachObserver(this);
-            showTime.AttachObserver(this);
-            showDate.AttachObserver(this);
+            countCapitals.ItemChosen += countCapitals_Chosen;
+            showVersion.ItemChosen += showVersion_Chosen;
+            showTime.ItemChosen += showTime_Chosen;
+            showDate.ItemChosen += showDate_Chosen;
 
             return mainMenu;
         }
 
-        public void UserChoseAction(ActionItem i_ChosenAction)
-        {
-            act(i_ChosenAction.Title);
-        }
-
-        private void act(string i_ActionTitle)
-        {
-            Console.Clear();
-
-            switch (i_ActionTitle)
-            {
-                case "Count Capitals":
-                    countCapitals();
-                    break;
-                case "Show Version":
-                    showVersion();
-                    break;
-                case "Show Time":
-                    showTime();
-                    break;
-                case "Show Date":
-                    showDate();
-                    break;
-            }
-
-            Console.WriteLine("Press enter to go back to the previous menu...");
-            Console.ReadLine();
-        }
-
-        private void countCapitals()
+        private void countCapitals_Chosen()
         {
             Console.WriteLine("Enter a sentence");
             string sentence = Console.ReadLine();
@@ -91,17 +62,17 @@ namespace Ex04.Test
             Console.WriteLine("There are {0} capital letters in your string!", capitalsCount);
         }
 
-        private void showVersion()
+        private void showVersion_Chosen()
         {
             Console.WriteLine("Version: 20.2.4.30620");
         }
 
-        private void showTime()
+        private void showTime_Chosen()
         {
             Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
         }
 
-        private void showDate()
+        private void showDate_Chosen()
         {
             Console.WriteLine(DateTime.Now.ToString("dd/MM/yyyy"));
         }

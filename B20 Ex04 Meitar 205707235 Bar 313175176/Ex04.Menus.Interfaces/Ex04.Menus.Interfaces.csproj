@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionItem.cs" />
-    <Compile Include="IChosenItemObserver.cs" />
+    <Compile Include="IChosenActionObserver.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="MenuItem.cs" />
   </ItemGroup>
