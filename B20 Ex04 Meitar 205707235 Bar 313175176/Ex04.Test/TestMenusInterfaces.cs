@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ex04.Menus.Interfaces;
 
 namespace Ex04.Test
@@ -45,7 +41,7 @@ namespace Ex04.Test
 
             return mainMenu;
         }
-
+        
         public void UserChoseAction(ActionItem i_ChosenAction)
         {
             act(i_ChosenAction.Title);
