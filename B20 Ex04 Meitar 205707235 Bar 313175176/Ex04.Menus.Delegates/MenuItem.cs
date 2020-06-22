@@ -46,7 +46,7 @@ namespace Ex04.Menus.Delegates
             r_SubMenuItems.Add(i_Item);
         }
 
-        public void Show()
+        public virtual void Show()
         {
             Console.Clear();
             StringBuilder menuItemStringBuilder = new StringBuilder();
@@ -56,15 +56,7 @@ namespace Ex04.Menus.Delegates
                 menuItemStringBuilder.Append(string.Format("{0}. {1}{2}", i, r_SubMenuItems[i].Title, Environment.NewLine));
             }
 
-            if (this is MainMenu)
-            {
-                menuItemStringBuilder.Append("0. Exit");
-            }
-            else
-            {
-                menuItemStringBuilder.Append("0. Back");
-            }
-
+            menuItemStringBuilder.Append(this is MainMenu ? "0. Exit" : "0. Back");
             Console.WriteLine(menuItemStringBuilder.ToString());
             chooseOption();
         }
@@ -74,8 +66,8 @@ namespace Ex04.Menus.Delegates
             int chosenOption;
             int numOfOptions = r_SubMenuItems.Count - 1;
             string exitOrBack = this is MainMenu ? "Exit" : "go Back";
-
             const bool v_InvalidInput = true;
+
             while (v_InvalidInput)
             {
                 Console.WriteLine("Please enter your choice (1-{0} or 0 to {1})", numOfOptions, exitOrBack);
